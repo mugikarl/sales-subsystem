@@ -9,4 +9,4 @@ class OrderDetails(models.Model):
     date = models.DateField()
     payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
-    name = models.ForeignKey(MenuItem, )
+    #name = models.ForeignKey(MenuItem, )
