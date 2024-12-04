@@ -1,5 +1,69 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h1>Menu and Orders</h1>
 
+<!-- Menu Items Table -->
+{% if all_items %}
+<h1>Create New Menu Item</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="name">Name</label>
+    <input type="text" name="name">
+    <label for="price">Price</label>
+    <input type="number" name="price">
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+<h2>Menu Items</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in all_items %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>₱{{ item.price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No menu items available.</p>
+{% endif %}
+
+<!-- Order Details Table -->
+{% if all_order_items %}
+<h2>Order Details</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Menu Item</th>
+            <th>Quantity</th>
+            <th>Date</th>
+            <th>Payment Amount</th>
+            <th>Total Price</th>
+            <th>Change</th> 
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in all_order_items %}
+        <tr>
+            <td>{{ order.menu_item.name }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.date }}</td>
+            <td>₱{{ order.payment_amount }}</td>
+            <td>₱{{ order.total_price }}</td>
+            <td>{{ order.change }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<p>No orders available.</p>
+{% endif %}
 {% endblock %}
