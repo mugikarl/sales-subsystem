@@ -9,4 +9,4 @@ class MenuForm(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = OrderDetail
-        fields = ['menu_item', 'quantity', 'date', 'payment_amount']
+        fields = ['menu_item','quantity', 'date', 'payment_amount']
