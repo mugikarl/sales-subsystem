@@ -12,4 +12,10 @@ class OrderDetail(models.Model):
     date = models.DateField()
     payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
-    #name = models.ForeignKey(MenuItem, )
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Order of {self.menu_item.name} on {self.date}"
+    
+    def total_price(self):
+        return self.menu_item.price * self.quantity
