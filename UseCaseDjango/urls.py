@@ -5,4 +5,5 @@ from sales_list import views as sales
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', sales.home, name='home'),
+    path('neworder/', sales.new_order, name='neworder'),
 ]
