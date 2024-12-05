@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import MenuItem, OrderDetail
+from .models import MenuItem, OrderDetail, OrderSummary
 from .forms import MenuForm, OrderForm
 
 def home(request):
@@ -12,11 +12,15 @@ def home(request):
     # Fetch all MenuItem and OrderDetail records
     all_items = MenuItem.objects.all()
     all_order_items = OrderDetail.objects.all()
+    all_ordersum_items = OrderSummary.objects.all()
+
+    print(all_ordersum_items)
 
     # Pass both datasets to the template
     context = {
         'all_items': all_items,
         'all_order_items': all_order_items,
+        'all_ordersum_items': all_ordersum_items,
     }
     return render(request, 'home.html', context)
 

@@ -36,34 +36,52 @@
 {% endif %}
 
 <!-- Order Details Table -->
-{% if all_order_items %}
-<h2>Order Details</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Menu Item</th>
-            <th>Quantity</th>
-            <th>Date</th>
-            <th>Payment Amount</th>
-            <th>Total Price</th>
-            <th>Change</th> 
-        </tr>
-    </thead>
-    <tbody>
-        {% for order in all_order_items %}
-        <tr>
-            <td>{{ order.menu_item.name }}</td>
-            <td>{{ order.quantity }}</td>
-            <td>{{ order.date }}</td>
-            <td>₱{{ order.payment_amount }}</td>
-            <td>₱{{ order.total_price }}</td>
-            <td>{{ order.change }}</td>
-        </tr>
-        {% endfor %}
+{% if all_ordersum_items %}
+    {% if all_order_items.all %}
+        <h2>Order Details</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Menu Item</th>
+                        <th>Quantity</th>
+                        <th>Date</th>
+                        <th>Payment Amount</th>
+                        <th>Total Price</th>
+                
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in all_ordersum_items %}
+                    {% for details in all_order_items.all %}
+                        <tr>
+                            <td>
+                                {{ details.menu_item.name }}    
+                            </td>
+                            <td>{{ details.quantity }}</td>
+                            <td>{{ order.date }}</td>
+                            <td>₱{{ order.payment_amount }}</td>
+                            <td>₱{{ details.total_price }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>Payment Amount</td>
+                        <td>₱{{ order.payment_amount }}</td>
+                    </tr>
+                    <tr>
+                        <td>Order Total:</td>
+                        <td>₱{{ order.order_total }}</td>
+                    </tr>
+                    <tr>
+                        <td>Change:</td>
+                        <td>{{ order.change }}</td>
+                    </tr>
+                {% endfor %}
     </tbody>
 </table>
 
+
 {% else %}
 <p>No orders available.</p>
+{% endif %}
 {% endif %}
 {% endblock %}
