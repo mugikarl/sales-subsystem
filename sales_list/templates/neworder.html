@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex flex-row">
+    {% if all_ordersum_items %}
+    <div>
+        <h2>Menu Items</h2>
+        <form method="POST">
+            <table class="table-auto">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in all_items %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td>₱{{ item.price }}</td>
+                                <td><button data-item="" class="add-btn update-order">Add item</button></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+            </table>
+        {% else %}
+        <p>No menu items available.</p>
+        {% endif %}
+        </form>
+    </div>
+    <div class="pl-8 ">
+        {% if all_ordersum_items %}
+        {% if all_order_items.all %}
+            <h2>Order Summary</h2>
+            <form action=""></form>
+                <table class="table-auto">
+                    <thead>
+                        <tr>
+                            <th>Menu Item</th>
+                            <th>Quantity</th>
+                            <th>Date</th>
+                            <th>Payment Amount</th>
+                            <th>Total Price</th>
+                    
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in all_ordersum_items %}
+                            {% for details in all_order_items.all %}
+                                <tr>
+                                    <td>
+                                        {{ details.menu_item.name }}    
+                                    </td>
+                                    <td>{{ details.quantity }}</td>
+                                    <td>{{ order.date }}</td>
+                                    <td>₱{{ order.payment_amount }}</td>
+                                    <td>₱{{ details.total_price }}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td>Payment Amount</td>
+                                <td>₱{{ order.payment_amount }}</td>
+                            </tr>
+                            <tr>
+                                <td>Order Total:</td>
+                                <td>₱{{ order.order_total }}</td>
+                            </tr>
+                            <tr>
+                                <td>Change:</td>
+                                <td>{{ order.change }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+    {% else %}
+    <p>No orders available.</p>
+    {% endif %}
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
