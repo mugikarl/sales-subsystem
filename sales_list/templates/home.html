@@ -17,7 +17,7 @@
 <h2>Transaction History</h2>
 <p></p>
 
-{% if all_ordersum_items %}
+{% if order_summary %}
     <table class="table-auto">
         <thead>
             <tr>
@@ -29,14 +29,16 @@
             </tr>
         </thead>
         <tbody>
-            {% for order in all_ordersum_items %}
+            {% for order in order_summary %}
                     <tr>
                         <td>{{ order.id }}</td>
                         <td>{{ order.date }}</td>
                         <td>₱{{ order.order_total }}</td>
                         <td>₱{{ order.payment_amount }}</td>
                         <td>{{ order.change }}</td>
-                        <td><a href="#">Edit</a></td>
+                        <td>
+                            <a href="{% url 'neworder' order.id %}">Edit</a> |
+                        </td>
                         <td><a href="#">Delete</a></td>
                     </tr>
             {% endfor %}
@@ -46,9 +48,8 @@
     <p>No Orders</p>
 {% endif %}
 
-<button>New Order</button>
-        <!-- ----- -->
-
+<a href="{% url 'create_new_order' %}">New Order</a>
+<!-- 
 
 <h2>Menu Items</h2>
 <table class="table-auto">
@@ -71,7 +72,6 @@
 <p>No menu items available.</p>
 {% endif %}
 
-<!-- Order Details Table -->
 {% if all_ordersum_items %}
     {% if all_order_items.all %}
         <h2>Order Summary</h2>
@@ -119,5 +119,5 @@
 {% else %}
 <p>No orders available.</p>
 {% endif %}
-{% endif %}
+{% endif %} -->
 {% endblock %}

@@ -34,7 +34,7 @@ class OrderSummary(models.Model):
 class OrderDetail(models.Model):
     quantity = models.PositiveIntegerField()
 
-    menu_item = models.ForeignKey(MenuItem, on_delete=models.SET_NULL, blank=True, null=True)
+    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, blank=True, null=True)
     order_summary = models.ForeignKey(OrderSummary, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):

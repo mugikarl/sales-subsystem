@@ -1,81 +1,74 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h1>Order Summary</h1>
+<div>
+    <p>Order ID: {{ order_summary.id }}</p>
+    <p>Date: {{ order_summary.date }}</p>
+</div>
 <div class="flex flex-row">
-    {% if all_ordersum_items %}
+    <!-- Menu Items Section -->
     <div>
         <h2>Menu Items</h2>
         <form method="POST">
+            {% csrf_token %}
             <table class="table-auto">
                 <thead>
                     <tr>
                         <th>Name</th>
                         <th>Price</th>
+                        <th>Action</th>
                     </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in all_items %}
-                            <tr>
-                                <td>{{ item.name }}</td>
-                                <td>₱{{ item.price }}</td>
-                                <td><button data-item="" class="add-btn update-order">Add item</button></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
+                </thead>
+                <tbody>
+                    {% for item in all_items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>₱{{ item.price }}</td>
+                        <td>
+                            <button type="submit" name="menu_item" value="{{ item.id }}" class="add-btn">Add to Order</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
-        {% else %}
-        <p>No menu items available.</p>
-        {% endif %}
         </form>
     </div>
-    <div class="pl-8 ">
-        {% if all_ordersum_items %}
-        {% if all_order_items.all %}
-            <h2>Order Summary</h2>
-            <form action=""></form>
-                <table class="table-auto">
-                    <thead>
-                        <tr>
-                            <th>Menu Item</th>
-                            <th>Quantity</th>
-                            <th>Date</th>
-                            <th>Payment Amount</th>
-                            <th>Total Price</th>
-                    
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for order in all_ordersum_items %}
-                            {% for details in all_order_items.all %}
-                                <tr>
-                                    <td>
-                                        {{ details.menu_item.name }}    
-                                    </td>
-                                    <td>{{ details.quantity }}</td>
-                                    <td>{{ order.date }}</td>
-                                    <td>₱{{ order.payment_amount }}</td>
-                                    <td>₱{{ details.total_price }}</td>
-                                </tr>
-                            {% endfor %}
-                            <tr>
-                                <td>Payment Amount</td>
-                                <td>₱{{ order.payment_amount }}</td>
-                            </tr>
-                            <tr>
-                                <td>Order Total:</td>
-                                <td>₱{{ order.order_total }}</td>
-                            </tr>
-                            <tr>
-                                <td>Change:</td>
-                                <td>{{ order.change }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-    {% else %}
-    <p>No orders available.</p>
-    {% endif %}
-    {% endif %}
+
+    <!-- Order Summary Section -->
+    <div>
+        <h2>Order Summary</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <table class="table-auto">
+                <thead>
+                    <tr>
+                        <th>Menu Item</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order_item in all_order_items %}
+                    <tr>
+                        <td>{{ order_item.menu_item.name }}</td>
+                        <td>{{ order_item.quantity}}</td>
+                        <td>₱{{ order_item.total_price }}</td>
+                        <td>
+                            <a href="{% url 'delete_order_item' order_item.id %}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div>
+                <label for="payment_amount">Payment Amount:</label>
+                <input type="number" name="payment_amount" step="0.01" min="0" value="{{ order_summary.payment_amount }}" required>
+            </div>
+            <p><strong>Total Order Amount:</strong> ₱{{ order_summary.order_total }}</p>
+            <p><strong>Change:</strong> {{ order_summary.change }}</p>
+            <button type="submit" class="btn btn-primary">Place Order</button>
+        </form>
     </div>
 </div>
 {% endblock %}
