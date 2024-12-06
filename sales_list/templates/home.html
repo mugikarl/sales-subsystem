@@ -1,21 +1,23 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
 {% block content %}
 <div class="bg-white p-6">
-    <!-- Header Section -->
-    <div class="relative bg-gradient-to-r from-yellow-400 via-red-500 to-red-600 rounded-lg shadow-lg text-white p-8 mb-8">
+    <!-- Header Section with Static Banner -->
+    <div class="bg-red-600 text-white p-8 mb-8 rounded-lg shadow-lg">
         <div class="flex justify-between items-center">
             <div>
                 <h1 class="text-4xl font-bold mb-2">Bawk <span class="text-yellow-200">Bawk</span> is Waiting For You</h1>
                 <p class="text-sm text-gray-100">Here's a list of your recent transactions:</p>
             </div>
-            <img src="{% static 'images/chicken_plate.png' %}" alt="Chicken Dish" class="w-48 h-48 rounded-full shadow-lg">
         </div>
-        <div class="absolute top-4 right-4 bg-white text-red-600 font-bold text-sm px-4 py-2 rounded-full shadow-lg">
-            5% Discount for 2 Orders
-        </div>
+    </div>
+
+    <!-- New Order Button above Transaction History -->
+    <div class="text-right mb-6">
+        <a href="{% url 'create_new_order' %}" class="px-6 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700">
+            New Order
+        </a>
     </div>
 
     <!-- Transaction History Section -->
@@ -65,11 +67,5 @@
         {% endif %}
     </div>
 
-    <!-- Action Buttons -->
-    <div class="text-center mt-8">
-        <a href="{% url 'create_new_order' %}" class="px-6 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700">
-            New Order
-        </a>
-    </div>
 </div>
 {% endblock %}

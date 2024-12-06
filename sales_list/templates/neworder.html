@@ -1,33 +1,43 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="bg-white p-8 rounded-lg shadow-lg">
+<div class="bg-white p-6">
     <!-- Header Section -->
-    <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-yellow-600">Order Summary</h1>
-        <p class="text-gray-600">Review and finalize your order below.</p>
+    <div class="bg-red-600 text-white p-8 mb-8 rounded-lg shadow-lg">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-4xl font-bold mb-2">Order Summary</h1>
+                <p class="text-sm text-gray-100">Review and finalize your order below.</p>
+            </div>
+        </div>
     </div>
-    <div class="flex flex-row">
+
+    <!-- Flexbox Container for Side-by-Side Tables -->
+    <div class="flex flex-wrap gap-6">
+
         <!-- Menu Items Section -->
-        <div>
-            <h2>Menu Items</h2>
+        <div class="flex-1 bg-white border rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-yellow-600 mb-4">Menu Items</h2>
             <form method="POST">
                 {% csrf_token %}
-                <table class="table-auto">
-                    <thead>
+                <table class="min-w-full table-auto border-collapse border border-gray-300">
+                    <thead class="bg-yellow-300">
                         <tr>
-                            <th>Name</th>
-                            <th>Price</th>
-                            <th>Action</th>
+                            <th class="border p-2 text-left text-red-600">Name</th>
+                            <th class="border p-2 text-left text-red-600">Price</th>
+                            <th class="border p-2 text-left text-red-600">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in all_items %}
-                        <tr>
-                            <td>{{ item.name }}</td>
-                            <td>₱{{ item.price }}</td>
-                            <td>
-                                <button type="submit" name="menu_item" value="{{ item.id }}" class="add-btn">Add to Order</button>
+                        <tr class="hover:bg-yellow-100">
+                            <td class="border p-2">{{ item.name }}</td>
+                            <td class="border p-2">₱{{ item.price }}</td>
+                            <td class="border p-2">
+                                <button type="submit" name="menu_item" value="{{ item.id }}" class="px-4 py-2 bg-green-600 text-white font-medium rounded-md shadow-md hover:bg-green-700">
+                                    Add to Order
+                                </button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -35,55 +45,60 @@
                 </table>
             </form>
         </div>
-        <!-- Order Summary Section -->
-    <div class="pl-8">
-        <h2>Order Summary</h2>
-        <table class="table-auto">
-            <thead>
-                <tr>
-                    <th>Menu Item</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order_item in all_order_items %}
-                <tr>
-                    <td>{{ order_item.menu_item.name }}</td>
-                    <td>
-                        <form method="POST" action="{% url 'update_quantity' order_item.id %}">
-                            {% csrf_token %}
-                            <button type="submit" name="adjustment" value="decrease">-</button>
-                            <span>{{ order_item.quantity }}</span>
-                            <button type="submit" name="adjustment" value="increase">+</button>
-                        </form>
-                    </td>
-                    <td>₱{{ order_item.total_price }}</td>
-                    <td>
-                        <a href="{% url 'delete_order_item' order_item.id %}">Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <form method="POST" action="{% url 'process_payment' order_summary.id %}">
-            {% csrf_token %}
-            <p><strong>Total Order Amount:</strong> ₱{{ order_summary.order_total }}</p>
 
-            <div>
-                <label for="payment_amount">Payment Amount:</label>
-                <input type="number" name="payment_amount" step="0.01" min="0" value="{{ order_summary.payment_amount }}" required>
+        <!-- Order Summary Section -->
+        <div class="flex-1 bg-white border rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold text-yellow-600 mb-4">Order Summary</h2>
+            <table class="min-w-full table-auto border-collapse border border-gray-300 mb-6">
+                <thead class="bg-yellow-300">
+                    <tr>
+                        <th class="border p-2 text-left text-red-600">Menu Item</th>
+                        <th class="border p-2 text-left text-red-600">Quantity</th>
+                        <th class="border p-2 text-left text-red-600">Total Price</th>
+                        <th class="border p-2 text-left text-red-600">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order_item in all_order_items %}
+                    <tr class="hover:bg-yellow-100">
+                        <td class="border p-2">{{ order_item.menu_item.name }}</td>
+                        <td class="border p-2">
+                            <form method="POST" action="{% url 'update_quantity' order_item.id %}">
+                                {% csrf_token %}
+                                <button type="submit" name="adjustment" value="decrease" class="px-2 py-1 bg-red-600 text-white rounded-md shadow-md hover:bg-red-700">-</button>
+                                <span class="mx-2">{{ order_item.quantity }}</span>
+                                <button type="submit" name="adjustment" value="increase" class="px-2 py-1 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700">+</button>
+                            </form>
+                        </td>
+                        <td class="border p-2">₱{{ order_item.total_price }}</td>
+                        <td class="border p-2">
+                            <a href="{% url 'delete_order_item' order_item.id %}" class="px-4 py-2 bg-red-600 text-white font-medium rounded-md shadow-md hover:bg-red-700">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <form method="POST" action="{% url 'process_payment' order_summary.id %}">
+                {% csrf_token %}
+                <p class="text-xl font-bold mb-4">Total Order Amount: ₱{{ order_summary.order_total }}</p>
+                <div class="mb-4">
+                    <label for="payment_amount" class="block text-sm font-medium text-gray-700">Payment Amount:</label>
+                    <input type="number" name="payment_amount" step="0.01" min="0" value="{{ order_summary.payment_amount }}" required class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-yellow-500 focus:ring-opacity-50">
+                </div>
+                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700">Process Payment</button>
+                <p class="mt-4"><strong>Change:</strong> ₱{{ order_summary.change }}</p>
+            </form>
+
+            {% if order_summary.payment_amount > order_summary.order_total %}
+            <div class="mt-6">
+                <a href="{% url 'report_preview' order_summary.id %}" class="px-6 py-2 bg-yellow-600 text-white rounded-md shadow-md hover:bg-yellow-700">Preview Invoice</a>
+                <a href="{% url 'report_download' order_summary.id %}" class="px-6 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700">Download Invoice</a>
             </div>
-            <button type="submit" class="btn btn-primary">Process Payment</button>
-            <p><strong>Change:</strong> ₱{{ order_summary.change }}</p>
-        </form>
-        {% if order_summary.payment_amount > order_summary.order_total %}
-        <div>
-            <a href="{% url 'report_preview' order_summary.id %}" class="btn btn-secondary">Preview Invoice</a>
-            <a href="{% url 'report_download' order_summary.id %}" class="btn btn-primary">Download Invoice</a>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
-</div>
 </div>
 {% endblock %}
