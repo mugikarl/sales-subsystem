@@ -36,31 +36,38 @@
     </div>
 
     <!-- Order Summary Section -->
-    <div>
+    <div class="pl-8">
         <h2>Order Summary</h2>
-        <form method="POST">
+        <table class="table-auto">
+            <thead>
+                <tr>
+                    <th>Menu Item</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order_item in all_order_items %}
+                <tr>
+                    <td>{{ order_item.menu_item.name }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'update_quantity' order_item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="adjustment" value="decrease">-</button>
+                            <span>{{ order_item.quantity }}</span>
+                            <button type="submit" name="adjustment" value="increase">+</button>
+                        </form>
+                    </td>
+                    <td>₱{{ order_item.total_price }}</td>
+                    <td>
+                        <a href="{% url 'delete_order_item' order_item.id %}">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form method="POST" action="{% url 'process_payment' order_summary.id %}">
             {% csrf_token %}
-            <table class="table-auto">
-                <thead>
-                    <tr>
-                        <th>Menu Item</th>
-                        <th>Quantity</th>
-                        <th>Total Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order_item in all_order_items %}
-                    <tr>
-                        <td>{{ order_item.menu_item.name }}</td>
-                        <td>{{ order_item.quantity}}</td>
-                        <td>₱{{ order_item.total_price }}</td>
-                        <td>
-                            <a href="{% url 'delete_order_item' order_item.id %}">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
             <div>
                 <label for="payment_amount">Payment Amount:</label>
                 <input type="number" name="payment_amount" step="0.01" min="0" value="{{ order_summary.payment_amount }}" required>
@@ -70,5 +77,6 @@
             <button type="submit" class="btn btn-primary">Place Order</button>
         </form>
     </div>
+    
 </div>
 {% endblock %}

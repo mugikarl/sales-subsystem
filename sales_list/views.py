@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import MenuItem, OrderDetail, OrderSummary
 from .forms import MenuForm, OrderForm
+from decimal import Decimal
 
 def home(request):
     order_summary = OrderSummary.objects.all()
@@ -31,6 +32,9 @@ def create_menu(request):
             form.save()  # Saves the new item to the database
     context = {'form': form}
     return render(request, 'home.html', context)
+
+
+#Create New Order Functions
 
 def create_new_order(request):
     # Create a new OrderSummary instance
@@ -87,6 +91,35 @@ def new_order(request, order_id):
     return render(request, 'neworder.html', context)
 
 
+def update_quantity(request, id):
+    if request.method == 'POST':
+        order_item = OrderDetail.objects.get(pk=id)  # Directly fetch the object
+        
+        adjustment = request.POST.get('adjustment')
+        if adjustment == 'increase':
+            order_item.quantity += 1
+        elif adjustment == 'decrease' and order_item.quantity > 1:
+            order_item.quantity -= 1
+        
+        order_item.save()
+    
+    return redirect('neworder', order_id=order_item.order_summary.id)
+
+def process_payment(request, order_id):
+    if request.method == 'POST':
+        order_summary = OrderSummary.objects.get(id=order_id)
+        payment_amount = Decimal(request.POST.get('payment_amount', 0.0))
+
+        # Update the payment amount
+        order_summary.payment_amount = payment_amount
+        order_summary.save()
+
+        # Calculate change dynamically
+        change = payment_amount - order_summary.order_total
+
+        return redirect('home') 
+    
+    
 def deleteOrderItem(request, id):
     order_item = OrderDetail.objects.get(pk=id)
     order_summary = order_item.order_summary
@@ -99,6 +132,7 @@ def deleteOrderSummary(request, id):
     order_summary.delete()
     return redirect('home')
 
+#Menu Item Functions
 def menu_list(request):
     if request.method == 'POST':
         form = MenuForm(request.POST)
