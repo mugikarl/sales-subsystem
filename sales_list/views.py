@@ -46,7 +46,7 @@ def create_new_order(request):
 def new_order(request, order_id):
     order_summary = OrderSummary.objects.get(id=order_id)
     all_items = MenuItem.objects.all()
-    all_order_items = OrderDetail.objects.filter(order_summary=order_summary)
+    # all_order_items = OrderDetail.objects.filter(order_summary=order_summary)
 
     if request.method == 'POST':
         if 'menu_item' in request.POST:
@@ -61,27 +61,27 @@ def new_order(request, order_id):
             if not created:
                 order_detail.quantity += 1
                 order_detail.save()
-        elif 'payment_amount' in request.POST:
-            # Handling payment
-            payment_amount = request.POST.get('payment_amount')
-            if payment_amount:
-                order_summary.payment_amount = float(payment_amount)
-                order_summary.save()
-            return redirect('home')  # Redirect to home after placing the order
-        else:
-            # Update quantities
-            for key, value in request.POST.items():
-                if key.startswith('quantity_'):
-                    order_item_id = key.split('_')[1]  # Extract the order item ID
-                    order_item = OrderDetail.objects.get(id=order_item_id)
-                    order_item.quantity = int(value)
-                    order_item.save()
+        # elif 'payment_amount' in request.POST:
+        #     # Handling payment
+        #     payment_amount = request.POST.get('payment_amount')
+        #     if payment_amount:
+        #         order_summary.payment_amount = float(payment_amount)
+        #         order_summary.save()
+        #     return redirect('home')  # Redirect to home after placing the order
+        # else:
+        #     # Update quantities
+        #     for key, value in request.POST.items():
+        #         if key.startswith('quantity_'):
+        #             order_item_id = key.split('_')[1]  # Extract the order item ID
+        #             order_item = OrderDetail.objects.get(id=order_item_id)
+        #             order_item.quantity = int(value)
+        #             order_item.save()
 
             # Recalculate the total order amount
-            total = sum(item.menu_item.price * item.quantity for item in all_order_items)
-            order_summary.order_total = total
-            order_summary.change = order_summary.payment_amount - total
-            order_summary.save()
+            # total = sum(item.menu_item.price * item.quantity for item in all_order_items)
+            # order_summary.order_total = total
+            # order_summary.change = order_summary.payment_amount - total
+            # order_summary.save()
 
     context = {
         'order_summary': order_summary,
@@ -105,19 +105,43 @@ def update_quantity(request, id):
     
     return redirect('neworder', order_id=order_item.order_summary.id)
 
+
 def process_payment(request, order_id):
+    # Retrieve the order summary for the given order_id
+    order_summary = OrderSummary.objects.get(id=order_id)
+    
+    # Retrieve the order details (items in the order)
+    all_order_items = OrderDetail.objects.filter(order_summary=order_summary)
+
     if request.method == 'POST':
-        order_summary = OrderSummary.objects.get(id=order_id)
+        # Get the payment amount from the POST data
         payment_amount = Decimal(request.POST.get('payment_amount', 0.0))
 
-        # Update the payment amount
+        # Update the payment amount in the order summary
         order_summary.payment_amount = payment_amount
         order_summary.save()
 
         # Calculate change dynamically
         change = payment_amount - order_summary.order_total
 
-        return redirect('home') 
+        # Get all the menu items to display
+        all_items = MenuItem.objects.all()
+
+        # Pass the change, order summary, all menu items, and order items to the template
+        return render(request, 'neworder.html', {
+            'order_summary': order_summary,
+            'change': change,
+            'all_items': all_items,  # Pass all menu items to the template
+            'all_order_items': all_order_items  # Pass the current order items to the template
+        })
+
+    # If it's a GET request, render the page normally with the order details and menu items
+    all_items = MenuItem.objects.all()
+    return render(request, 'neworder.html', {
+        'order_summary': order_summary,
+        'all_items': all_items,  # Display all menu items on GET request
+        'all_order_items': all_order_items  # Display current order items
+    })
     
     
 def deleteOrderItem(request, id):

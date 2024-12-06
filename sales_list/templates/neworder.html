@@ -68,13 +68,14 @@
         </table>
         <form method="POST" action="{% url 'process_payment' order_summary.id %}">
             {% csrf_token %}
+            <p><strong>Total Order Amount:</strong> ₱{{ order_summary.order_total }}</p>
+
             <div>
                 <label for="payment_amount">Payment Amount:</label>
                 <input type="number" name="payment_amount" step="0.01" min="0" value="{{ order_summary.payment_amount }}" required>
             </div>
-            <p><strong>Total Order Amount:</strong> ₱{{ order_summary.order_total }}</p>
+            <button type="submit" class="btn btn-primary">Process Payment</button>
             <p><strong>Change:</strong> {{ order_summary.change }}</p>
-            <button type="submit" class="btn btn-primary">Place Order</button>
         </form>
     </div>
     
