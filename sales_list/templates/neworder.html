@@ -77,6 +77,9 @@
             <button type="submit" class="btn btn-primary">Process Payment</button>
             <p><strong>Change:</strong> {{ order_summary.change }}</p>
         </form>
+        {% if order_summary.payment_amount > order_summary.order_total %}
+        <button type="submit class=btn btn-primary">Print Invoice</button>
+        {% endif %}
     </div>
     
 </div>
