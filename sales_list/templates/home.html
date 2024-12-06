@@ -1,123 +1,75 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
+<div class="bg-white p-6">
+    <!-- Header Section -->
+    <div class="relative bg-gradient-to-r from-yellow-400 via-red-500 to-red-600 rounded-lg shadow-lg text-white p-8 mb-8">
+        <div class="flex justify-between items-center">
+            <div>
+                <h1 class="text-4xl font-bold mb-2">Bawk <span class="text-yellow-200">Bawk</span> is Waiting For You</h1>
+                <p class="text-sm text-gray-100">Here's a list of your recent transactions:</p>
+            </div>
+            <img src="{% static 'images/chicken_plate.png' %}" alt="Chicken Dish" class="w-48 h-48 rounded-full shadow-lg">
+        </div>
+        <div class="absolute top-4 right-4 bg-white text-red-600 font-bold text-sm px-4 py-2 rounded-full shadow-lg">
+            5% Discount for 2 Orders
+        </div>
+    </div>
 
-<!-- Menu Items Table -->
-{% if all_items %}
-<!-- <h1>Create New Menu Item</h1>
-<form method="POST">
-    {% csrf_token %}
-    <label for="name">Name</label>
-    <input type="text" name="name">
-    <label for="price">Price</label>
-    <input type="number" name="price">
-    <button type="submit" class="btn btn-primary">Save</button>
-</form> -->
+    <!-- Transaction History Section -->
+    <div class="bg-white border rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-semibold text-yellow-600 mb-4">Transaction History</h2>
 
-<h2>Transaction History</h2>
-<p></p>
-
-{% if order_summary %}
-    <table class="table-auto">
-        <thead>
-            <tr>
-                <th>Order No.</th>
-                <th>Date</th>
-                <th>Total</th>
-                <th>Payment Amount</th>
-                <th>Change</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for order in order_summary %}
-                    <tr>
-                        <td>{{ order.id }}</td>
-                        <td>{{ order.date }}</td>
-                        <td>₱{{ order.order_total }}</td>
-                        <td>₱{{ order.payment_amount }}</td>
-                        <td>{{ order.change }}</td>
-                        <td>
-                            <a href="{% url 'neworder' order.id %}">Edit</a> |
-                        </td>
-                        <td><a href="#">Delete</a></td>
-                    </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>No Orders</p>
-{% endif %}
-
-<a href="{% url 'create_new_order' %}">New Order</a>
-<!-- 
-
-<h2>Menu Items</h2>
-<table class="table-auto">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in all_items %}
-        <tr>
-            <td>{{ item.name }}</td>
-            <td>₱{{ item.price }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No menu items available.</p>
-{% endif %}
-
-{% if all_ordersum_items %}
-    {% if all_order_items.all %}
-        <h2>Order Summary</h2>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Menu Item</th>
-                        <th>Quantity</th>
-                        <th>Date</th>
-                        <th>Payment Amount</th>
-                        <th>Total Price</th>
-                
-                    </tr>
-                </thead>
-                <tbody>
-                {% for order in all_ordersum_items %}
-                    {% for details in all_order_items.all %}
-                        <tr>
-                            <td>
-                                {{ details.menu_item.name }}    
-                            </td>
-                            <td>{{ details.quantity }}</td>
-                            <td>{{ order.date }}</td>
-                            <td>₱{{ order.payment_amount }}</td>
-                            <td>₱{{ details.total_price }}</td>
-                        </tr>
-                    {% endfor %}
-                    <tr>
-                        <td>Payment Amount</td>
-                        <td>₱{{ order.payment_amount }}</td>
-                    </tr>
-                    <tr>
-                        <td>Order Total:</td>
-                        <td>₱{{ order.order_total }}</td>
-                    </tr>
-                    <tr>
-                        <td>Change:</td>
-                        <td>{{ order.change }}</td>
-                    </tr>
+        {% if order_summary %}
+        <table class="min-w-full table-auto border-collapse border border-gray-300 mb-6">
+            <thead class="bg-yellow-300">
+                <tr>
+                    <th class="border p-2 text-left text-red-600">Order No.</th>
+                    <th class="border p-2 text-left text-red-600">Date</th>
+                    <th class="border p-2 text-left text-red-600">Total</th>
+                    <th class="border p-2 text-left text-red-600">Payment Amount</th>
+                    <th class="border p-2 text-left text-red-600">Change</th>
+                    <th class="border p-2 text-left text-red-600">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in order_summary %}
+                <tr class="hover:bg-yellow-100">
+                    <td class="border p-2">{{ order.id }}</td>
+                    <td class="border p-2">{{ order.date }}</td>
+                    <td class="border p-2">₱{{ order.order_total }}</td>
+                    <td class="border p-2">₱{{ order.payment_amount }}</td>
+                    <td class="border p-2">{{ order.change }}</td>
+                    <td class="border p-2">
+                        <div class="flex space-x-2">
+                            {% if order.id %}
+                            <a href="{% url 'neworder' order.id %}" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-md shadow-md hover:bg-blue-700">
+                                Edit
+                            </a>
+                            {% else %}
+                            <span class="px-4 py-2 bg-gray-400 text-white font-medium rounded-md shadow-md">Edit (Unavailable)</span>
+                            {% endif %}
+                            <a href="#" class="px-4 py-2 bg-red-600 text-white font-medium rounded-md shadow-md hover:bg-red-700">
+                                Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
                 {% endfor %}
-    </tbody>
-</table>
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-red-600">No Orders</p>
+        {% endif %}
+    </div>
 
-
-{% else %}
-<p>No orders available.</p>
-{% endif %}
-{% endif %} -->
+    <!-- Action Buttons -->
+    <div class="text-center mt-8">
+        <a href="{% url 'create_new_order' %}" class="px-6 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700">
+            New Order
+        </a>
+    </div>
+</div>
 {% endblock %}

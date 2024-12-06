@@ -1,40 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Order Summary</h1>
-<div>
-    <p>Order ID: {{ order_summary.id }}</p>
-    <p>Date: {{ order_summary.date }}</p>
-</div>
-<div class="flex flex-row">
-    <!-- Menu Items Section -->
-    <div>
-        <h2>Menu Items</h2>
-        <form method="POST">
-            {% csrf_token %}
-            <table class="table-auto">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in all_items %}
-                    <tr>
-                        <td>{{ item.name }}</td>
-                        <td>₱{{ item.price }}</td>
-                        <td>
-                            <button type="submit" name="menu_item" value="{{ item.id }}" class="add-btn">Add to Order</button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </form>
+<div class="bg-white p-8 rounded-lg shadow-lg">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-yellow-600">Order Summary</h1>
+        <p class="text-gray-600">Review and finalize your order below.</p>
     </div>
 
+<<<<<<< HEAD
     <!-- Order Summary Section -->
     <div class="pl-8">
         <h2>Order Summary</h2>
@@ -83,6 +57,96 @@
             <a href="{% url 'report_download' order_summary.id %}" class="btn btn-primary">Download Invoice</a>
         </div>
         {% endif %}
+=======
+    <!-- Order Details Section -->
+    <div class="bg-gray-50 p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-2xl font-semibold text-red-500 mb-4">Order Details</h2>
+        <div class="text-sm text-gray-700">
+            <p><strong>Order ID:</strong> {{ order_summary.id }}</p>
+            <p><strong>Date:</strong> {{ order_summary.date }}</p>
+        </div>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="flex flex-col md:flex-row md:space-x-8">
+        <!-- Menu Items Section -->
+        <div class="bg-gray-50 p-6 rounded-lg shadow-md flex-1">
+            <h2 class="text-xl font-semibold text-yellow-600 mb-4">Menu Items</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <table class="min-w-full table-auto border-collapse border border-gray-200 shadow-lg rounded-lg">
+                    <thead class="bg-yellow-500 text-white">
+                        <tr>
+                            <th class="border p-4 text-left">Name</th>
+                            <th class="border p-4 text-left">Price</th>
+                            <th class="border p-4 text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in all_items %}
+                        <tr class="hover:bg-yellow-100">
+                            <td class="border p-4">{{ item.name }}</td>
+                            <td class="border p-4">₱{{ item.price }}</td>
+                            <td class="border p-4">
+                                <button type="submit" name="menu_item" value="{{ item.id }}" 
+                                    class="px-4 py-2 bg-green-600 text-white font-medium rounded-md shadow-md hover:bg-green-700">
+                                    Add to Order
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+
+        <!-- Order Summary Section -->
+        <div class="bg-gray-50 p-6 rounded-lg shadow-md flex-1">
+            <h2 class="text-xl font-semibold text-yellow-600 mb-4">Order Summary</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <table class="min-w-full table-auto border-collapse border border-gray-200 shadow-lg rounded-lg">
+                    <thead class="bg-yellow-500 text-white">
+                        <tr>
+                            <th class="border p-4 text-left">Menu Item</th>
+                            <th class="border p-4 text-left">Quantity</th>
+                            <th class="border p-4 text-left">Total Price</th>
+                            <th class="border p-4 text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order_item in all_order_items %}
+                        <tr class="hover:bg-yellow-100">
+                            <td class="border p-4">{{ order_item.menu_item.name }}</td>
+                            <td class="border p-4">{{ order_item.quantity }}</td>
+                            <td class="border p-4">₱{{ order_item.total_price }}</td>
+                            <td class="border p-4">
+                                <a href="{% url 'delete_order_item' order_item.id %}" 
+                                   class="px-4 py-2 bg-red-600 text-white font-medium rounded-md shadow-md hover:bg-red-700">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Payment Section -->
+                <div class="mt-6">
+                    <label for="payment_amount" class="block text-sm font-medium text-gray-700">Payment Amount:</label>
+                    <input type="number" name="payment_amount" step="0.01" min="0" value="{{ order_summary.payment_amount }}" 
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500" required>
+                </div>
+                <div class="mt-4">
+                    <p class="text-lg font-semibold"><strong>Total Order Amount:</strong> ₱{{ order_summary.order_total }}</p>
+                    <p class="text-lg font-semibold"><strong>Change:</strong> {{ order_summary.change }}</p>
+                </div>
+                <button type="submit" class="mt-6 px-6 py-2 bg-blue-600 text-white font-bold rounded-md shadow-md hover:bg-blue-700">
+                    Place Order
+                </button>
+            </form>
+        </div>
+>>>>>>> origin/home-base-menulist-neworder-design
     </div>
     
 </div>
