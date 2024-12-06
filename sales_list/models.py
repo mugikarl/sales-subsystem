@@ -29,7 +29,7 @@ class OrderSummary(models.Model):
         if total > self.payment_amount:
             return "Insufficient Amount!"
         elif self.payment_amount >= total:
-            return f"₱{change}"
+            return change
 
 class OrderDetail(models.Model):
     quantity = models.PositiveIntegerField()
@@ -50,5 +50,5 @@ class OrderDetail(models.Model):
         if total_amount > self.order_summary.payment_amount:
             return "Insufficient Amount!"
         elif self.order_summary.payment_amount > total_amount:
-            return f"₱{change}"
+            return change
         

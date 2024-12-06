@@ -2,6 +2,13 @@ from django.shortcuts import render, redirect
 from .models import MenuItem, OrderDetail, OrderSummary
 from .forms import MenuForm, OrderForm
 from decimal import Decimal
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle
 
 def home(request):
     order_summary = OrderSummary.objects.all()
@@ -194,3 +201,78 @@ def editMenuItem(request, id):
         'all_items': all_items,
     }
     return render(request, 'menulist.html', context)
+
+#Print Pdf
+
+def generate_invoice(order_summary, order_items):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    # Title
+    c.setFont("Helvetica-Bold", 18)
+    c.drawString(200, height - 50, f"Invoice for Order {order_summary.id}")
+
+    # Order Details
+    c.setFont("Helvetica", 12)
+    c.drawString(50, height - 100, f"Order ID: {order_summary.id}")
+    c.drawString(50, height - 120, f"Date: {order_summary.date}")
+    c.drawString(50, height - 140, f"Total Amount: PHP{order_summary.order_total}")
+    c.drawString(50, height - 160, f"Payment: PHP{order_summary.payment_amount}")
+    c.drawString(50, height - 180, f"Change: PHP{order_summary.change}")
+
+    # Table for Order Items
+    table_data = [["Item Name", "Quantity", "Price", "Total"]]
+    for item in order_items:
+        table_data.append([
+            item.menu_item.name,
+            item.quantity,
+            f"PHP{item.menu_item.price}",
+            f"PHP{item.total_price}"
+        ])
+
+    table = Table(table_data, colWidths=[150, 70, 100, 150])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]))
+
+    # Render Table
+    table.wrapOn(c, width, height)
+    table.drawOn(c, 50, height - 300)
+
+    # Footer
+    c.drawString(50, 50, "Thank you for your purchase!")
+    c.save()
+
+    buffer.seek(0)
+    return buffer
+
+def report_preview(request, order_id):
+    order_summary = OrderSummary.objects.get(id=order_id)
+    order_items = OrderDetail.objects.filter(order_summary=order_summary)
+
+    # Generate the PDF
+    buffer = generate_invoice(order_summary, order_items)
+
+    # Return the PDF as an HTTP response
+    return HttpResponse(buffer, content_type='application/pdf')
+
+
+def report_download(request, order_id):
+    order_summary = OrderSummary.objects.get(id=order_id)
+    order_items = OrderDetail.objects.filter(order_summary=order_summary)
+
+    # Generate the PDF
+    buffer = generate_invoice(order_summary, order_items)
+
+    # Return the PDF as a downloadable file
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Invoice_{order_summary.id}.pdf"'
+    return response
+    

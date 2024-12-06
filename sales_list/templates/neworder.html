@@ -75,10 +75,13 @@
                 <input type="number" name="payment_amount" step="0.01" min="0" value="{{ order_summary.payment_amount }}" required>
             </div>
             <button type="submit" class="btn btn-primary">Process Payment</button>
-            <p><strong>Change:</strong> {{ order_summary.change }}</p>
+            <p><strong>Change:</strong> ₱{{ order_summary.change }}</p>
         </form>
         {% if order_summary.payment_amount > order_summary.order_total %}
-        <button type="submit class=btn btn-primary">Print Invoice</button>
+        <div>
+            <a href="{% url 'report_preview' order_summary.id %}" class="btn btn-secondary">Preview Invoice</a>
+            <a href="{% url 'report_download' order_summary.id %}" class="btn btn-primary">Download Invoice</a>
+        </div>
         {% endif %}
     </div>
     

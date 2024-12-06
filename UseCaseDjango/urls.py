@@ -15,4 +15,8 @@ urlpatterns = [
     path('menulist/', sales.menu_list, name='menu_list'),
     path('delete-menu-item/<int:id>/', sales.deleteMenuItem, name='delete_menu_item'),
     path('edit-menu-item/<int:id>/' ,sales.editMenuItem, name='edit_menu_item'),
+    path('order/payment/<int:order_id>/preview/', sales.report_preview, name='report_preview'),
+    path('order/payment/<int:order_id>/download/', sales.report_download, name='report_download'),
+    path('order/payment/<int:order_id>/preview/', sales.report_preview, name='report_preview'),
+    path('order/payment/<int:order_id>/download/', sales.report_download, name='report_download'),
 ]
