@@ -233,12 +233,12 @@ def generate_invoice(order_summary, order_items):
 
     table = Table(table_data, colWidths=[150, 70, 100, 150])
     table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
 
@@ -247,7 +247,7 @@ def generate_invoice(order_summary, order_items):
     table.drawOn(c, 50, height - 300)
 
     # Footer
-    c.drawString(50, 50, "Thank you for your purchase!")
+    c.drawString(50, 50, "Thank you for buying in BawkBawk! Come again!")
     c.save()
 
     buffer.seek(0)
