@@ -8,7 +8,6 @@ urlpatterns = [
     path('neworder/<int:order_id>/', sales.new_order, name='neworder'),
     path('create-new-order/', sales.create_new_order, name='create_new_order'),
     path('delete-order-item/<int:id>/', sales.deleteOrderItem, name='delete_order_item'),
-    #path('edit-order-item/<int:id>/', sales.editOrderItem, name='edit_order_item'),
     path('update_quantity/<int:id>/', sales.update_quantity, name='update_quantity'),
     path('order/payment/<int:order_id>/', sales.process_payment, name='process_payment'),
     path('delete-order-summary/<int:id>/', sales.deleteOrderSummary, name='delete_order_summary'),

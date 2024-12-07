@@ -44,16 +44,16 @@ def create_menu(request):
 #Create New Order Functions
 
 def create_new_order(request):
-    # Create a new OrderSummary instance
+    #Create a new OrderSummary instance
     new_order_summary = OrderSummary.objects.create(payment_amount=0.00)
     
-    # Redirect to the new order page, passing the new order summary ID
+    #Redirect to the new order page, passing the new order summary ID
     return redirect('neworder', order_id=new_order_summary.id)
 
 def new_order(request, order_id):
     order_summary = OrderSummary.objects.get(id=order_id)
     all_items = MenuItem.objects.all()
-    # all_order_items = OrderDetail.objects.filter(order_summary=order_summary)
+    #all_order_items = OrderDetail.objects.filter(order_summary=order_summary)
 
     if request.method == 'POST':
         if 'menu_item' in request.POST:
@@ -68,27 +68,6 @@ def new_order(request, order_id):
             if not created:
                 order_detail.quantity += 1
                 order_detail.save()
-        # elif 'payment_amount' in request.POST:
-        #     # Handling payment
-        #     payment_amount = request.POST.get('payment_amount')
-        #     if payment_amount:
-        #         order_summary.payment_amount = float(payment_amount)
-        #         order_summary.save()
-        #     return redirect('home')  # Redirect to home after placing the order
-        # else:
-        #     # Update quantities
-        #     for key, value in request.POST.items():
-        #         if key.startswith('quantity_'):
-        #             order_item_id = key.split('_')[1]  # Extract the order item ID
-        #             order_item = OrderDetail.objects.get(id=order_item_id)
-        #             order_item.quantity = int(value)
-        #             order_item.save()
-
-            # Recalculate the total order amount
-            # total = sum(item.menu_item.price * item.quantity for item in all_order_items)
-            # order_summary.order_total = total
-            # order_summary.change = order_summary.payment_amount - total
-            # order_summary.save()
 
     context = {
         'order_summary': order_summary,
@@ -209,11 +188,11 @@ def generate_invoice(order_summary, order_items):
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
 
-    # Title
+    #Title
     c.setFont("Helvetica-Bold", 18)
-    c.drawString(200, height - 50, f"Invoice for Order {order_summary.id}")
+    c.drawString(220, height - 50, f"Invoice for Order {order_summary.id}")
 
-    # Order Details
+    #Order Details
     c.setFont("Helvetica", 12)
     c.drawString(50, height - 100, f"Order ID: {order_summary.id}")
     c.drawString(50, height - 120, f"Date: {order_summary.date}")
@@ -221,7 +200,7 @@ def generate_invoice(order_summary, order_items):
     c.drawString(50, height - 160, f"Payment: PHP{order_summary.payment_amount}")
     c.drawString(50, height - 180, f"Change: PHP{order_summary.change}")
 
-    # Table for Order Items
+    #Table for Order Items
     table_data = [["Item Name", "Quantity", "Price", "Total"]]
     for item in order_items:
         table_data.append([
@@ -231,7 +210,7 @@ def generate_invoice(order_summary, order_items):
             f"PHP{item.total_price}"
         ])
 
-    table = Table(table_data, colWidths=[150, 70, 100, 150])
+    table = Table(table_data, colWidths=[150, 70, 100, 190])
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.white),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
@@ -242,12 +221,10 @@ def generate_invoice(order_summary, order_items):
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]))
 
-    # Render Table
+    #Render Table
     table.wrapOn(c, width, height)
     table.drawOn(c, 50, height - 300)
 
-    # Footer
-    c.drawString(50, 50, "Thank you for buying in BawkBawk! Come again!")
     c.save()
 
     buffer.seek(0)

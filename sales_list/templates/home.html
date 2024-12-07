@@ -46,14 +46,10 @@
                     <td class="border p-2">{{ order.change }}</td>
                     <td class="border p-2">
                         <div class="flex space-x-2">
-                            {% if order.id %}
                             <a href="{% url 'neworder' order.id %}" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-md shadow-md hover:bg-blue-700">
                                 Edit
                             </a>
-                            {% else %}
-                            <span class="px-4 py-2 bg-gray-400 text-white font-medium rounded-md shadow-md">Edit (Unavailable)</span>
-                            {% endif %}
-                            <a href="#" class="px-4 py-2 bg-red-600 text-white font-medium rounded-md shadow-md hover:bg-red-700">
+                            <a href="{% url 'delete_order_summary' order.id %}" class="px-4 py-2 bg-red-600 text-white font-medium rounded-md shadow-md hover:bg-red-700">
                                 Delete
                             </a>
                         </div>

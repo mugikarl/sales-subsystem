@@ -12,9 +12,12 @@
             </div>
         </div>
     </div>
+    <div>
+        <a href="{% url 'home' %}" class="px-6 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700">Back to transactions</a>
+    </div>
 
     <!-- Flexbox Container for Side-by-Side Tables -->
-    <div class="flex flex-wrap gap-6">
+    <div class="flex flex-wrap gap-6 py-6">
 
         <!-- Menu Items Section -->
         <div class="flex-1 bg-white border rounded-lg shadow-lg p-6 mb-8">
@@ -92,7 +95,7 @@
                 <p class="mt-4"><strong>Change:</strong> ₱{{ order_summary.change }}</p>
             </form>
 
-            {% if order_summary.payment_amount > order_summary.order_total %}
+            {% if order_summary.payment_amount >= order_summary.order_total %}
             <div class="mt-6">
                 <a href="{% url 'report_preview' order_summary.id %}" class="px-6 py-2 bg-yellow-600 text-white rounded-md shadow-md hover:bg-yellow-700">Preview Invoice</a>
                 <a href="{% url 'report_download' order_summary.id %}" class="px-6 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700">Download Invoice</a>
